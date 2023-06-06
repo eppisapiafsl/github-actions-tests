@@ -9,8 +9,8 @@ jobs:
     name: Running deploy-dev-android
     runs-on: ubuntu-latest
     env:
-      PR: ${{ github.event.issue.pull_request.number }}
-      BRANCH: ${{ github.event.issue.pull_request.head.sha }}
+      PR: ${{ github.event.issue.number }}
+      BRANCH: ${{ steps.extract_branch.outputs.branch }}
       POTATO: potato
     steps:
       - name: Check data
