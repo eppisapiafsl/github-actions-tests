@@ -8,10 +8,15 @@ jobs:
     if: contains(github.event.comment.body, 'run android:dev-build')
     name: Running deploy-dev-android
     runs-on: ubuntu-latest
+    env:
+      PR: ${{ github.event.issue.pull_request.number }}
+      BRANCH: ${{ github.event.issue.pull_request.head.sha }}
+      POTATO: potato
     steps:
       - name: Check data
         id: pr_number
         run: |
-          echo $(github.event.issue.pull_request.number)
-          echo $(github.event.issue.pull_request.head.sha)
+          echo $PR
+          echo $BRANCH
+          echo $POTATO
 
