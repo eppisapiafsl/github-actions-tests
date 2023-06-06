@@ -9,10 +9,13 @@ jobs:
     name: Running deploy-dev-android
     runs-on: ubuntu-latest
     env:
-      PR: ${{ github.event.issue.number }}
-      BRANCH: ${{ steps.extract_branch.outputs.branch }}
-      POTATO: potato
+      PR: ${{ github.event.issue.issue_number }}
+      POTATO: new value
     steps:
+      - name: Extract branch
+        id: extract_branch
+        run: |
+          echo "::set-output name=BRANCH::$(echo ${{ github.event.comment.body }} | grep -oP '(?<=run android:dev-build ).*')"
       - name: Check data
         id: pr_number
         run: |
