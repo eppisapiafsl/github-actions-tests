@@ -9,7 +9,8 @@ jobs:
     name: Running deploy-dev-android
     runs-on: ubuntu-latest
     env:
-      PR: github.event.issue.issue_number
+      PR: ${{ github.event.comment.issue.issue_number }}
+      ACTION: ${{ github.event.comment.action }}
       POTATO: new value
     steps:
       - name: Extract branch
@@ -21,5 +22,6 @@ jobs:
         run: |
           echo $PR
           echo $BRANCH
+          echo "Action $ACTION"
           echo $POTATO
 
