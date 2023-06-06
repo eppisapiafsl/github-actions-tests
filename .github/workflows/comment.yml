@@ -1,23 +1,28 @@
-name: "Bitrise Bot"
+name: Print Pull Request Info
 on:
   issue_comment:
-    types: [created, edited]
+    types:
+      - created
 
 jobs:
-  android-dev-build:
+  print_pull_request_info:
     if: contains(github.event.comment.body, 'run android:dev-build')
-    name: Running deploy-dev-android
     runs-on: ubuntu-latest
-    env:
-      PR: ${{ github.event.comment }}
-      ACTION: ${{ github.event.comment.body }}
-      POTATO: new value
     steps:
-      - name: Check data
-        id: pr_number
-        run: |
-          echo $PR
-          echo $BRANCH
-          echo "Body $ACTION"
-          echo $POTATO
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      - name: Print Pull Request Info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pull_request_url=$(jq -r '.issue.pull_request.url' $GITHUB_EVENT_PATH)
+          pull_request_number=$(basename $pull_request_url)
+          pull_request_info=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+                              "https://api.github.com/repos/${{ github.repository }}/pulls/$pull_request_number")
+          pull_request_branch=$(echo $pull_request_info | jq -r '.head.ref')
+          pull_request_head=$(echo $pull_request_info | jq -r '.head.label')
+
+          echo "Pull Request ID: $pull_request_number"
+          echo "Branch Name: $pull_request_branch"
+          echo "Head: $pull_request_head"
